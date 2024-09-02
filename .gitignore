@@ -29,3 +29,5 @@ replay_pid*
 /build
 .cxx
 local.properties
+
+google-services.json
