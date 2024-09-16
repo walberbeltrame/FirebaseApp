@@ -10,11 +10,12 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 data class Message(
+    var id: String? = null,
     val title: String = "",
     val date: Timestamp? = null
 )
 
-class MessagesAdapter(private val messagesList: MutableList<Message>) :
+class MessagesAdapter(private val messagesList: MutableList<Message>, private val onMessageClick: (Message) -> Unit) :
     RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>() {
 
     // ViewHolder que representa a visualização de cada item da lista usando View Binding
@@ -33,6 +34,10 @@ class MessagesAdapter(private val messagesList: MutableList<Message>) :
         val date = message.date?.toDate()
         val formatter = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault())
         holder.binding.messageDate.text = formatter.format(date)
+        // Configura o clique no item da lista
+        holder.binding.root.setOnClickListener {
+            onMessageClick(message)
+        }
     }
 
     // Retorna o número de itens na lista

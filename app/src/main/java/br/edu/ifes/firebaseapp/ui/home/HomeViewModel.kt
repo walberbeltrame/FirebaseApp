@@ -63,6 +63,8 @@ class HomeViewModel : ViewModel() {
                     val messagesList = mutableListOf<Message>()
                     for (document in snapshot.documents) {
                         val message = document.toObject(Message::class.java)
+                        // Recupera o ID e adiciona ao objeto Message
+                        message?.id = document.id
                         messagesList.add(message!!)
                     }
 

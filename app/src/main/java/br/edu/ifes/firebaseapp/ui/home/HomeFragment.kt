@@ -1,5 +1,6 @@
 package br.edu.ifes.firebaseapp.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.ifes.firebaseapp.databinding.FragmentHomeBinding
+
+import br.edu.ifes.firebaseapp.UpdateActivity
 
 
 class HomeFragment : Fragment() {
@@ -43,7 +46,12 @@ class HomeFragment : Fragment() {
 
         // Configura RecyclerView
         binding.recyclerViewMessages.layoutManager = LinearLayoutManager(requireContext())
-        messagesAdapter = MessagesAdapter(mutableListOf()) // Inicializa o adaptador
+        messagesAdapter = MessagesAdapter(mutableListOf()) { message -> 
+            val intent = Intent(requireContext(), UpdateActivity::class.java)
+            intent.putExtra("MESSAGE_ID", message.id)
+            intent.putExtra("MESSAGE_TITLE", message.title)
+            startActivity(intent)
+        }
         binding.recyclerViewMessages.adapter = messagesAdapter
 
         // Observa as mudanças no ViewModel
