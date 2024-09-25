@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/badge_messages"
+        android:icon="@android:drawable/ic_dialog_email"
+        app:actionLayout="@layout/badge_messages"
+        app:showAsAction="always" />
 </menu>

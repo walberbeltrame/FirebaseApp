@@ -32,8 +32,10 @@ class MessagesAdapter(private val messagesList: MutableList<Message>, private va
         val message = messagesList[position]
         holder.binding.messageTitle.text = message.title
         val date = message.date?.toDate()
-        val formatter = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault())
-        holder.binding.messageDate.text = formatter.format(date)
+        if (date != null) {
+            val formatter = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault())
+            holder.binding.messageDate.text = formatter.format(date)
+        }
         // Configura o clique no item da lista
         holder.binding.root.setOnClickListener {
             onMessageClick(message)

@@ -2,6 +2,7 @@ package br.edu.ifes.firebaseapp
 
 import android.os.Bundle
 import android.view.Menu
+import android.widget.TextView
 import android.content.Intent
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifes.firebaseapp.databinding.ActivityMainBinding
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,6 +52,28 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+
+        // Verifique se o usuário está autenticado
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val userId = user.uid
+            val messagesRef = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("messages")
+            messagesRef.addSnapshotListener { querySnapshot, error ->
+                if (error != null) {
+                    return@addSnapshotListener
+                }
+                if (querySnapshot != null) {
+                    val menuItem = menu?.findItem(R.id.badge_messages)
+                    val actionView = menuItem?.actionView
+                    val badgeMessages = actionView?.findViewById<TextView>(R.id.count_badge)!!
+                    badgeMessages.text = querySnapshot.size().toString()
+                }
+            }
+        }
+
         return true
     }
 

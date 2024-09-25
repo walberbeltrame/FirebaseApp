@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ListenerRegistration
 
 class HomeViewModel : ViewModel() {
 
@@ -23,9 +24,10 @@ class HomeViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private var lastVisibleDocument: DocumentSnapshot? = null
-    private val pageSize = 10
+    private var pageSize = 10
     private lateinit var messagesRef: Query
+
+    private var listenerRegistration: ListenerRegistration? = null
 
     init {
         fetchMessages()
@@ -47,12 +49,9 @@ class HomeViewModel : ViewModel() {
                 .orderBy("date", Query.Direction.DESCENDING)
                 .limit(pageSize.toLong())
 
-            var query = messagesRef
-            lastVisibleDocument?.let {
-                query = query.startAfter(it)
-            }
+            listenerRegistration?.remove()
 
-            query.addSnapshotListener { snapshot, e ->
+            listenerRegistration = messagesRef.addSnapshotListener { snapshot, e ->
                 _isLoading.value = false
 
                 if (e != null) {
@@ -71,7 +70,6 @@ class HomeViewModel : ViewModel() {
                     _messages.value = messagesList
                     _isEmpty.value = messagesList.isEmpty()
 
-                    lastVisibleDocument = snapshot.documents[snapshot.size() - 1]
                 } else {
                     _isEmpty.value = true
                 }
@@ -82,10 +80,14 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        listenerRegistration?.remove()
+    }
+
     fun loadMoreMessages() {
-        if (lastVisibleDocument != null) {
-            fetchMessages()
-        }
+        pageSize += 10
+        fetchMessages()
     }
 
 }
