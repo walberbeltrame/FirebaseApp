@@ -11,8 +11,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import br.edu.ifes.firebaseapp.databinding.ActivityMainBinding
 
 import com.google.firebase.auth.FirebaseAuth
@@ -42,11 +44,22 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                R.id.nav_home,
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // Interceptar o clique apenas para o item de logout
+        navView.setNavigationItemSelectedListener { menuItem ->
+            if (menuItem.itemId == R.id.nav_logout) {
+                showLogoutConfirmationDialog()
+                true
+            } else {
+                // Para os outros itens, deixar o navController lidar com a navegação
+                menuItem.onNavDestinationSelected(navController) || super.onOptionsItemSelected(menuItem)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -94,5 +107,35 @@ class MainActivity : AppCompatActivity() {
         			finish() // Finaliza a MainActivity para que o usuário não possa voltar a ela sem fazer login
     		}
 	}
+
+    // Função para mostrar a Popup de confirmação
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirmar Logout")
+        builder.setMessage("Você deseja sair da sua conta?")
+
+        // Botão "Sair"
+        builder.setPositiveButton("Sair") { dialog, _ ->
+            logoutFromFirebase()
+            dialog.dismiss()
+        }
+
+        // Botão "Cancelar"
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        // Mostrar o diálogo
+        builder.create().show()
+    }
+
+    // Função para deslogar do Firebase
+    private fun logoutFromFirebase() {
+        FirebaseAuth.getInstance().signOut()
+        // Redirecionar para a tela de login (LoginActivity)
+        val loginIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginIntent)
+        finish() // Finaliza a MainActivity
+    }
 
 }
