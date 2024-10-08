@@ -1,6 +1,11 @@
 package br.edu.ifes.firebaseapp
 
 import android.content.Intent
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +23,11 @@ class AddActivity : AppCompatActivity() {
 
     private lateinit var db: FirebaseFirestore
 
+    private lateinit var sensorManager: SensorManager
+    private lateinit var sensorEventListener: SensorEventListener
+    private var lightSensor: Sensor? = null
+    private var light: Float? = null
+
 	override fun onCreate(savedInstanceState: Bundle?) {
     	    	super.onCreate(savedInstanceState)
 
@@ -27,6 +37,28 @@ class AddActivity : AppCompatActivity() {
 
     	    	// Inicialize o FirebaseAuth
     	    	auth = FirebaseAuth.getInstance()
+
+                // Inicializa o SensorManager e o sensor de luz
+                sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+                lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+
+                if (lightSensor != null) {
+                    sensorEventListener = object : SensorEventListener {
+                        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+                        override fun onSensorChanged(event: SensorEvent?) {
+                            event?.let {
+                                // Obtém o valor único de luz
+                                light = it.values[0]
+                                // Atualiza o TextView com o valor do sensor de luz
+                                binding.lightTextView.text = "$light"
+                            }
+                        }
+                    }
+
+                    // Registrar o listener com o sensor de luz
+                    sensorManager.registerListener(sensorEventListener, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
+                }
 
     	    	// Configurar cliques nos botões usando binding
     	    	binding.addButton.setOnClickListener {
@@ -50,10 +82,18 @@ class AddActivity : AppCompatActivity() {
                         db = FirebaseFirestore.getInstance()
 
                         // Cria o objeto mensagem
-                        val message = hashMapOf(
-                            "title" to title,
-                            "date" to FieldValue.serverTimestamp()
-                        )
+                        val message = if (light != null) {
+                            hashMapOf(
+                                "title" to title,
+                                "light" to light,
+                                "date" to FieldValue.serverTimestamp()
+                            )
+                        } else {
+                           hashMapOf(
+                                "title" to title,
+                                "date" to FieldValue.serverTimestamp()
+                            ) 
+                        }
 
                         // Adiciona a tarefa à subcoleção 'messages' do usuário
                         db.collection("users").document(userId).collection("messages")
@@ -68,4 +108,11 @@ class AddActivity : AppCompatActivity() {
         	    	    
     	    	}
 	}
+
+    override fun onPause() {
+        super.onPause()
+        if (lightSensor != null) {
+            sensorManager.unregisterListener(sensorEventListener)
+        }
+    }
 }

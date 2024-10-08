@@ -12,7 +12,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Título da Mensagem"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
+    
+    <!-- Linha de separação -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/purple_200"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Campo para o sensor de luz -->
+    <TextView
+        android:id="@+id/labelLightTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sensor de luminosidade"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+    <TextView
+        android:id="@+id/lightTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
+    <!-- Linha de separação -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/purple_200"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
 
     <!-- Botão para adicionar a mensagem -->
     <Button

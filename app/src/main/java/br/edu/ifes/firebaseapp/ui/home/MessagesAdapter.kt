@@ -12,6 +12,7 @@ import java.util.Locale
 data class Message(
     var id: String? = null,
     val title: String = "",
+    val light: Float? = null,
     val date: Timestamp? = null
 )
 
@@ -31,6 +32,11 @@ class MessagesAdapter(private val messagesList: MutableList<Message>, private va
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val message = messagesList[position]
         holder.binding.messageTitle.text = message.title
+        holder.binding.messageLight.text = if (message.light != null) {
+            "Luminosidade: ${message.light}"
+        } else {
+            "Luminosidade não disponível"
+        }
         val date = message.date?.toDate()
         if (date != null) {
             val formatter = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault())
