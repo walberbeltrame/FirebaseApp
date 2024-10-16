@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import br.edu.ifes.firebaseapp.databinding.ItemMessageBinding
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.GeoPoint
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -13,6 +14,7 @@ data class Message(
     var id: String? = null,
     val title: String = "",
     val light: Float? = null,
+    val location: GeoPoint? = null,
     val date: Timestamp? = null
 )
 
@@ -36,6 +38,12 @@ class MessagesAdapter(private val messagesList: MutableList<Message>, private va
             "Luminosidade: ${message.light}"
         } else {
             "Luminosidade não disponível"
+        }
+        val location = message.location as? GeoPoint
+        holder.binding.messageLocation.text = if (location != null) {
+            "Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+        } else {
+            "Localização não disponível"
         }
         val date = message.date?.toDate()
         if (date != null) {

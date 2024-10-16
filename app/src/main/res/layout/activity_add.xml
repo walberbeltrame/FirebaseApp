@@ -43,6 +43,38 @@
         android:layout_height="1dp"
         android:background="@color/purple_200"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
+    
+    <!-- Campos para a Localização -->
+    <TextView
+        android:id="@+id/labelLocationTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Localização"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+    <TextView
+        android:id="@+id/locationTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clique para obter a localização"
+        android:textSize="14sp"
+        android:textColor="@color/teal_700"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+    <Button
+        android:id="@+id/locationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GPS"
+        android:layout_gravity="right" />
+
+    <!-- Linha de separação -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/purple_200"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp" />
 
     <!-- Botão para adicionar a mensagem -->

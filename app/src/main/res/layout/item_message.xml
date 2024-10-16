@@ -20,6 +20,14 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="@color/purple_200" />
+    
+    <!-- Localização -->
+    <TextView
+        android:id="@+id/messageLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/teal_700" />
 
     <!-- Data de Criação da Mensagem -->
     <TextView
