@@ -1,0 +1,17 @@
+{
+"name": "Flutter Dev Container",
+"image": "ghcr.io/cirruslabs/flutter:stable",
+"features": {
+   "ghcr.io/devcontainers/features/git-lfs:1": {}
+ },
+"customizations": {
+  "vscode": {
+    "extensions": [
+      "dart-code.dart-code",
+      "dart-code.flutter"
+    ]
+  }
+},
+"forwardPorts": [8080],
+"postCreateCommand": "flutter doctor && git lfs install"
+}
